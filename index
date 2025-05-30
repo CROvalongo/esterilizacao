@@ -5,45 +5,43 @@
   <title>Verificação de Comparticipação</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: auto; }
-    input, button { display: block; width: 100%; padding: 8px; margin: 10px 0; }
+    input, button { display: block; width: 100%; padding: 10px; margin: 10px 0; }
     #resultado { font-weight: bold; margin-top: 20px; }
   </style>
 </head>
 <body>
   <h2>Verifique a Comparticipação na Esterilização</h2>
   
-  <label>Rendimento mensal total (€):</label>
-  <input type="number" id="rendimento" placeholder="Ex: 1500" required>
+  <label for="rendimento">Rendimento mensal total (€):</label>
+  <input type="number" id="rendimento" placeholder="Ex: 1500">
 
-  <label>Número de elementos no agregado familiar:</label>
-  <input type="number" id="elementos" placeholder="Ex: 3" required>
+  <label for="elementos">Nº de elementos no agregado familiar:</label>
+  <input type="number" id="elementos" placeholder="Ex: 3">
 
-  <button onclick="verificarComparticipacao()">Calcular</button>
+  <button id="calcular">Calcular</button>
 
   <p id="resultado"></p>
 
   <script>
-    function verificarComparticipacao() {
+    document.getElementById('calcular').addEventListener('click', function() {
       const rendimento = parseFloat(document.getElementById('rendimento').value);
       const elementos = parseInt(document.getElementById('elementos').value);
 
-      if (isNaN(rendimento) || isNaN(elementos) || elementos === 0) {
-        document.getElementById('resultado').textContent = "Por favor, insira valores válidos.";
+      if (isNaN(rendimento) || isNaN(elementos) || elementos <= 0) {
+        document.getElementById('resultado').innerHTML = "Por favor, preencha os dois campos corretamente.";
         return;
       }
 
       const perCapita = rendimento / elementos;
-      const limite = 870;
-      let mensagem;
+      const temDireito = perCapita <= 870;
 
-      if (perCapita <= limite) {
-        mensagem = `Rendimento per capita: €${perCapita.toFixed(2)}. Tem direito a <strong>100% de comparticipação</strong>.`;
-      } else {
-        mensagem = `Rendimento per capita: €${perCapita.toFixed(2)}. <strong>Não tem direito a comparticipação</strong>.`;
-      }
+      const mensagem = `
+        Rendimento per capita: <strong>€${perCapita.toFixed(2)}</strong><br>
+        ${temDireito ? '✅ Tem direito a <strong>100% de comparticipação</strong>.' : '❌ Não tem direito a comparticipação.'}
+      `;
 
       document.getElementById('resultado').innerHTML = mensagem;
-    }
+    });
   </script>
 </body>
 </html>
